@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>404 — bostuff</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root{ --bg:#f9f9f7; --ink:#1a1a1a; --muted:#8a8a92; --noise:#d0d0d4; }
+    *{box-sizing:border-box}
+    html,body{font:16px/1.45 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; background:var(--bg); color:var(--ink); text-transform:lowercase}
+    a{color:inherit}
+
+    .wrap{max-width:1200px; margin:0 auto; padding:40px 20px; min-height:100dvh; display:flex; flex-direction:column; justify-content:center}
+    .corner{position:fixed; top:10px; left:12px; font-size:12px; color:var(--muted); letter-spacing:.02em}
+
+    #hero{flex:0; display:flex; align-items:center; justify-content:center; margin:60px 0; text-align:center}
+    #hero svg{width:90%; max-width:880px; margin:0 auto; display:block}
+
+    .divider{width:100%; height:60px; margin:32px auto; display:block}
+
+    #copy{text-align:center; max-width:800px; margin:0 auto}
+    #copy p{margin:6px 0; line-height:1.32}
+    .muted{color:var(--muted)}
+    .home{margin-top:8px; display:inline-block; border-bottom:1px solid currentColor; text-decoration:none}
+
+    #legal{margin-top:40px; font-size:12px; color:var(--muted); text-align:center}
+    .nowrap{white-space:nowrap}
+  </style>
+</head>
+<body>
+  <div class="corner" aria-hidden="true">bostuff</div>
+
+  <div class="wrap">
+    <section id="hero">
+      <svg viewBox="0 0 1200 360" xmlns="http://www.w3.org/2000/svg" aria-label="bostuff — 404 not found">
+        <defs>
+          <filter id="warp404">
+            <feTurbulence type="turbulence" baseFrequency="0.03 0.05" numOctaves="3" seed="5" stitchTiles="stitch" result="t">
+              <animate attributeName="baseFrequency" dur="30s" values="0.03 0.05;0.045 0.035;0.04 0.07;0.03 0.05" repeatCount="indefinite"/>
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="t" xChannelSelector="R" yChannelSelector="G" scale="64">
+              <animate attributeName="scale" dur="26s" values="36;52;68;44;60;36" repeatCount="indefinite"/>
+            </feDisplacementMap>
+          </filter>
+
+          <mask id="stroke-mask404">
+            <rect width="1200" height="360" fill="#000"/>
+            <g stroke="#fff" stroke-width="24" stroke-linecap="butt" stroke-linejoin="round">
+              <path d="M120 90 L120 260 M120 175 C160 140, 220 150, 220 190 C220 230, 160 240, 120 210"/>
+              <path d="M300 190 C300 140, 360 140, 360 190 C360 240, 300 240, 300 190 Z"/>
+              <path d="M500 150 C 468 122, 430 148, 456 176 C 482 204, 526 204, 540 228 C 552 250, 520 268, 495 282"/>
+              <path d="M540 120 L540 260 M500 150 L580 150"/>
+              <path d="M630 170 C630 235, 710 235, 710 170 L710 120"/>
+              <path d="M808 110 C 780 95, 772 124, 786 148 C 798 170, 798 200, 798 260 M756 150 C 786 142, 816 142, 844 150"/>
+              <path d="M888 110 C 860 95, 852 124, 866 148 C 878 170, 878 200, 878 260 M848 150 C 876 142, 904 142, 928 150"/>
+            </g>
+          </mask>
+
+          <filter id="grainfill404">
+            <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="8"/>
+            <feColorMatrix type="saturate" values="0"/>
+            <feComponentTransfer>
+              <feFuncA type="table" tableValues="0 0.8"/>
+            </feComponentTransfer>
+          </filter>
+        </defs>
+
+        <g filter="url(#warp404)" transform="translate(76,0)">
+          <g mask="url(#stroke-mask404)">
+            <rect width="1200" height="360" filter="url(#grainfill404)" fill="var(--noise)"/>
+          </g>
+        </g>
+
+        <g aria-hidden="true">
+          <text x="50%" y="84%" text-anchor="middle" font-size="64" fill="var(--muted)" style="letter-spacing:0.05em">404 — not found</text>
+        </g>
+      </svg>
+    </section>
+
+    <svg class="divider" viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" aria-label="divider">
+      <defs>
+        <filter id="divider-warp404">
+          <feTurbulence type="turbulence" baseFrequency="0.03 0.05" numOctaves="3" seed="42" stitchTiles="stitch" result="t">
+          <animate attributeName="baseFrequency" dur="28s" values="0.03 0.05;0.048 0.032;0.04 0.07;0.03 0.05" repeatCount="indefinite"/>
+        </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="t" xChannelSelector="R" yChannelSelector="G" scale="48">
+            <animate attributeName="scale" dur="24s" values="24;38;54;30;44;24" repeatCount="indefinite"/>
+          </feDisplacementMap>
+        </filter>
+        <mask id="divider-mask404">
+          <rect width="1200" height="60" fill="#000"/>
+          <line x1="240" y1="30" x2="960" y2="30" stroke="#fff" stroke-width="2"/>
+        </mask>
+      </defs>
+      <g filter="url(#divider-warp404)">
+        <g mask="url(#divider-mask404)">
+          <rect width="1200" height="60" fill="var(--noise)"/>
+        </g>
+      </g>
+    </svg>
+
+    <section id="copy">
+      <p class="muted">this page doesn't exist or moved.</p>
+      <p><a class="home" href="/" aria-label="go back home">go home</a></p>
+    </section>
+
+    <section id="legal">
+      <p>contact: <a href="mailto:hi@bostuff.com" style="text-decoration:none;border-bottom:1px solid currentColor">hi@bostuff.com</a> · <span class="nowrap">©&nbsp;<span id="y"></span>&nbsp;bostuff</span></p>
+    </section>
+  </div>
+
+  <script>
+    (function(){
+      var y = document.getElementById('y'); if(y) y.textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
