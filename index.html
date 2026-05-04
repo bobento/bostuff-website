@@ -49,71 +49,48 @@
     .site-brand:hover { color: var(--ink); }
     @media (min-width: 768px) { .site-brand { top: 28px; left: 32px; } }
 
-    /* ── bottom-right nav ── */
-    .site-nav { position: fixed; bottom: 20px; right: 20px; z-index: 50; width: 196px; }
+    /* ── bottom-right nav: glass label ── */
+    .site-nav { position: fixed; bottom: 20px; right: 20px; z-index: 50; width: 172px; }
     @media (min-width: 768px) { .site-nav { bottom: 28px; right: 32px; } }
 
-    /* dot-matrix: 5 cols = categories, dots filled from bottom = work count */
-    .nav-dotgrid {
-      display: grid;
-      grid-template-columns: repeat(5, 3.5px);
-      grid-template-rows: repeat(8, 3.5px);
-      gap: 3px;
-      margin-bottom: 11px;
-      justify-content: end;
-    }
-    .nd {
-      width: 3.5px; height: 3.5px; border-radius: 50%;
-      background: transparent; border: .7px solid var(--ink); opacity: .13;
-    }
-    .nd.on { background: var(--ink); border: none; opacity: .30; }
+    /* halftone dot band — small circles top → rounded squares bottom */
+    .ng-dots { display: flex; flex-direction: column; gap: 2px; margin-bottom: 9px; align-items: flex-end; }
+    .ng-drow  { display: flex; gap: 2px; }
+    .nd-sm { display: inline-block; width: 2px;   height: 2px;   border-radius: 50%;  background: var(--ink); opacity: .18; }
+    .nd-md { display: inline-block; width: 3.5px; height: 3.5px; border-radius: 38%;  background: var(--ink); opacity: .24; }
+    .nd-lg { display: inline-block; width: 5.5px; height: 5.5px; border-radius: 26%;  background: var(--ink); opacity: .30; }
 
-    .nav-grid {
-      display: grid; grid-template-columns: 1fr auto;
-      align-items: start; column-gap: 10px; row-gap: 4px;
-    }
-    .n-works {
-      grid-column: 1; justify-self: end;
-      font-size: 18px; text-transform: lowercase; letter-spacing: -.04em; line-height: 1;
-      color: var(--i58); transition: color .15s; position: relative;
-    }
-    .n-works:hover { color: var(--ink); }
-    .n-link {
-      grid-column: 1; justify-self: end;
-      font-family: 'Courier New', monospace; font-size: 11px;
-      text-transform: uppercase; letter-spacing: .08em; line-height: 1;
-      color: var(--i42); transition: color .15s; position: relative;
-    }
-    .n-link:hover { color: var(--ink); }
-    .n-imp {
-      grid-column: 1; justify-self: end;
-      font-family: 'Courier New', monospace; font-size: 8px;
-      text-transform: uppercase; letter-spacing: .16em; line-height: 1;
-      color: var(--i32); transition: color .15s; position: relative;
-    }
-    .n-imp:hover { color: var(--ink); }
-    .n-num { grid-column: 2; align-self: start; font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: .12em; line-height: 1; }
-    .n-num-works { color: var(--i26); font-size: 8px; padding-top: 3px; }
-    .n-num-std   { color: var(--i24); font-size: 8px; }
-    .n-num-imp   { color: var(--i20); font-size: 7px; }
+    /* label body — wonky filter applied */
+    .ng-label { text-align: right; filter: url(#navWarp); }
 
-    .uline { display: block; position: absolute; bottom: -3px; right: 0; height: 1px; width: 0; background: currentColor; opacity: 0; transition: width .2s, opacity .2s; }
-    .n-works:hover .uline, .n-link:hover .uline, .n-imp:hover .uline { width: 100%; opacity: .5; }
-
-    /* cert lines — bold sans matching automotive glass label print */
-    .nav-cert {
-      margin-top: 9px; text-align: right;
+    .ng-head {
+      display: flex; justify-content: flex-end; align-items: center; gap: 5px;
+      margin-bottom: 6px;
       font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-      font-weight: 700; font-size: 7px;
-      text-transform: uppercase; letter-spacing: .22em; line-height: 1.5;
-      color: var(--i20);
+      font-weight: 700; font-size: 6.5px; text-transform: uppercase; letter-spacing: .22em;
+      color: var(--i26);
     }
-    .nav-ref {
-      margin-top: 2px; text-align: right;
+    .ng-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 11px; height: 11px; border-radius: 50%; border: 1px solid currentColor;
+      font-size: 6px; line-height: 1; flex-shrink: 0;
+    }
+
+    .ng-items { display: flex; flex-direction: column; gap: 4px; }
+    .ng-item {
+      display: flex; justify-content: flex-end; align-items: baseline; gap: 7px;
       font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-      font-weight: 700; font-size: 6.5px;
-      text-transform: uppercase; letter-spacing: .18em; line-height: 1;
-      color: var(--i16, rgba(22,22,22,.16));
+      font-weight: 700; font-size: 8.5px; text-transform: uppercase; letter-spacing: .16em;
+      color: var(--i40); transition: color .15s; line-height: 1; text-decoration: none;
+    }
+    .ng-item:hover { color: var(--ink); }
+    .ng-n { font-size: 6px; letter-spacing: .1em; color: var(--i22, rgba(22,22,22,.22)); min-width: 12px; text-align: right; }
+
+    .ng-foot {
+      margin-top: 7px;
+      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+      font-weight: 700; font-size: 6px; text-transform: uppercase; letter-spacing: .2em;
+      color: var(--i18, rgba(22,22,22,.18)); text-align: right; line-height: 1.6;
     }
 
     section { position: relative; z-index: 10; }
@@ -166,11 +143,12 @@
     .wnum { text-align: right; font-family: 'Courier New', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: .12em; line-height: 1.15; color: var(--i30); transition: color .15s; }
     .wrow:hover .wnum { color: var(--i62); }
 
-    .wtitle-wrap { position: relative; }
+    .wtitle-wrap { position: relative; display: flex; align-items: center; gap: 7px; }
     .wtitle { font-size: 14px; text-transform: lowercase; line-height: 1; letter-spacing: -.01em; }
     @media (min-width: 640px) { .wtitle { font-size: 13px; } }
-    .wtitle-wrap::after { content: ''; display: block; position: absolute; bottom: -3px; left: 0; height: 1px; width: 0; background: currentColor; opacity: 0; transition: width .2s, opacity .2s; }
-    .wrow:hover .wtitle-wrap::after { width: 100%; opacity: .5; }
+    .wdot { width: 5px; height: 5px; border-radius: 50%; border: .8px solid currentColor; opacity: .28; flex-shrink: 0; transition: opacity .15s; }
+    .wdot.on { background: currentColor; opacity: .38; }
+    .wrow:hover .wdot { opacity: .6; }
 
     .wdesc { font-family: 'Courier New', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; line-height: 1.26; color: var(--i33); transition: color .15s; grid-column: 2 / -1; }
     @media (min-width: 640px) { .wdesc { grid-column: auto; } }
@@ -264,30 +242,26 @@
 <a href="#top" class="site-brand">bostuff</a>
 
 <nav class="site-nav" aria-label="primary">
-  <!-- 5 cols = furniture|fonts|paintings|sculptures|lamps, dots filled = work count -->
-  <!-- furniture:8  fonts:0  paintings:0  sculptures:0  lamps:0 -->
-  <div class="nav-dotgrid" aria-hidden="true">
-    <span class="nd on"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span>
-    <span class="nd on"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span>
-    <span class="nd on"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span>
-    <span class="nd on"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span>
-    <span class="nd on"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span>
-    <span class="nd on"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span>
-    <span class="nd on"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span>
-    <span class="nd on"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span><span class="nd"></span>
+  <!-- halftone band: small circles (top) → rounded squares (bottom) -->
+  <div class="ng-dots" aria-hidden="true">
+    <div class="ng-drow"><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span></div>
+    <div class="ng-drow"><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span></div>
+    <div class="ng-drow"><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span></div>
+    <div class="ng-drow"><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span></div>
+    <div class="ng-drow"><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span></div>
+    <div class="ng-drow"><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span></div>
   </div>
-  <div class="nav-grid">
-    <a href="#works" class="n-works"><span class="uline"></span>works</a>
-    <span class="n-num n-num-works">01</span>
-    <a href="#about" class="n-link"><span class="uline"></span>about</a>
-    <span class="n-num n-num-std">02</span>
-    <a href="mailto:hi@bostuff.com" class="n-link"><span class="uline"></span>contact</a>
-    <span class="n-num n-num-std">03</span>
-    <a href="#imprint" class="n-imp"><span class="uline"></span>imprint</a>
-    <span class="n-num n-num-imp">04</span>
+  <!-- glass label body -->
+  <div class="ng-label">
+    <div class="ng-head"><span class="ng-mark">B</span>bostuff · v1.1</div>
+    <div class="ng-items">
+      <a href="#works"              class="ng-item">works<span class="ng-n">01</span></a>
+      <a href="#about"              class="ng-item">about<span class="ng-n">02</span></a>
+      <a href="mailto:hi@bostuff.com" class="ng-item">contact<span class="ng-n">03</span></a>
+      <a href="#imprint"            class="ng-item">imprint<span class="ng-n">04</span></a>
+    </div>
+    <div class="ng-foot">bs-v1.1 · <span id="ng-time">--:--:--</span></div>
   </div>
-  <div class="nav-cert">E8 · 43R-BS001<br>DOT-26 · M001 · AS1</div>
-  <div class="nav-ref">BOSTUFF · 2601</div>
 </nav>
 
 <!-- HERO -->
@@ -296,6 +270,10 @@
     <div class="wordmark-wrap">
       <svg viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" aria-label="bostuff wordmark">
         <defs>
+          <filter id="navWarp" x="-4%" y="-8%" width="108%" height="116%">
+            <feTurbulence type="turbulence" baseFrequency=".07 .11" numOctaves="2" seed="9" result="t"/>
+            <feDisplacementMap in="SourceGraphic" in2="t" scale="1.8"/>
+          </filter>
           <filter id="boWarp" x="-18%" y="-18%" width="136%" height="136%">
             <feTurbulence type="turbulence" baseFrequency=".018 .025" numOctaves="2" seed="5" result="t"/>
             <feDisplacementMap in="SourceGraphic" in2="t" scale="16"/>
@@ -351,27 +329,27 @@
       <div class="works-list">
         <a href="#works-grid" class="wrow">
           <span class="wnum">01</span>
-          <span class="wtitle-wrap"><span class="wtitle">furniture</span></span>
+          <span class="wtitle-wrap"><span class="wdot on"></span><span class="wtitle">furniture</span></span>
           <span class="wdesc">tables, storage, seating and small objects</span>
         </a>
         <a href="#" class="wrow">
           <span class="wnum">02</span>
-          <span class="wtitle-wrap"><span class="wtitle">fonts</span></span>
+          <span class="wtitle-wrap"><span class="wdot"></span><span class="wtitle">fonts</span></span>
           <span class="wdesc">type design, wordmarks and letter studies</span>
         </a>
         <a href="#" class="wrow">
           <span class="wnum">03</span>
-          <span class="wtitle-wrap"><span class="wtitle">paintings</span></span>
+          <span class="wtitle-wrap"><span class="wdot"></span><span class="wtitle">paintings</span></span>
           <span class="wdesc">painted works, surfaces and image pieces</span>
         </a>
         <a href="#" class="wrow">
           <span class="wnum">04</span>
-          <span class="wtitle-wrap"><span class="wtitle">sculptures</span></span>
+          <span class="wtitle-wrap"><span class="wdot"></span><span class="wtitle">sculptures</span></span>
           <span class="wdesc">three-dimensional work and material studies</span>
         </a>
         <a href="#" class="wrow">
           <span class="wnum">05</span>
-          <span class="wtitle-wrap"><span class="wtitle">lamps</span></span>
+          <span class="wtitle-wrap"><span class="wdot"></span><span class="wtitle">lamps</span></span>
           <span class="wdesc">lighting objects and lamp experiments</span>
         </a>
       </div>
@@ -476,6 +454,17 @@
   });
 
   observer.observe(trigger);
+</script>
+<script>
+  (function(){
+    var el = document.getElementById('ng-time');
+    function tick(){
+      var d = new Date();
+      el.textContent = [d.getHours(),d.getMinutes(),d.getSeconds()]
+        .map(function(n){return n<10?'0'+n:n}).join(':');
+    }
+    tick(); setInterval(tick, 1000);
+  })();
 </script>
 </body>
 </html>
