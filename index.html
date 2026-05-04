@@ -40,58 +40,37 @@
     }
 
     /* ── top-left brand ── */
-    .site-brand {
+    /* ── top-left nav ── */
+    .site-nav {
       position: fixed; top: 20px; left: 20px; z-index: 50;
       font-family: 'Courier New', monospace; font-size: 9px;
-      text-transform: uppercase; letter-spacing: .14em; line-height: 1;
-      color: var(--i40); transition: color .15s;
+      text-transform: lowercase; letter-spacing: .08em; line-height: 1;
     }
-    .site-brand:hover { color: var(--ink); }
-    @media (min-width: 768px) { .site-brand { top: 28px; left: 32px; } }
+    @media (min-width: 768px) { .site-nav { top: 28px; left: 32px; } }
 
-    /* ── bottom-right nav: glass label ── */
-    .site-nav { position: fixed; bottom: 20px; right: 20px; z-index: 50; width: 172px; }
-    @media (min-width: 768px) { .site-nav { bottom: 28px; right: 32px; } }
-
-    /* halftone dot band — small circles top → rounded squares bottom */
-    .ng-dots { display: flex; flex-direction: column; gap: 2px; margin-bottom: 9px; align-items: flex-end; }
-    .ng-drow  { display: flex; gap: 2px; }
-    .nd-sm { display: inline-block; width: 2px;   height: 2px;   border-radius: 50%;  background: var(--ink); opacity: .18; }
-    .nd-md { display: inline-block; width: 3.5px; height: 3.5px; border-radius: 38%;  background: var(--ink); opacity: .24; }
-    .nd-lg { display: inline-block; width: 5.5px; height: 5.5px; border-radius: 26%;  background: var(--ink); opacity: .30; }
-
-    /* label body — wonky filter applied */
-    .ng-label { text-align: right; filter: url(#navWarp); }
-
-    .ng-head {
-      display: flex; justify-content: flex-end; align-items: center; gap: 5px;
-      margin-bottom: 6px;
-      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-      font-weight: 700; font-size: 6.5px; text-transform: uppercase; letter-spacing: .22em;
-      color: var(--i26);
+    .ng-brand {
+      display: block; color: var(--i40); transition: color .15s; margin-bottom: 9px;
     }
-    .ng-mark {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 11px; height: 11px; border-radius: 50%; border: 1px solid currentColor;
-      font-size: 6px; line-height: 1; flex-shrink: 0;
-    }
+    .ng-brand:hover { color: var(--ink); }
 
-    .ng-items { display: flex; flex-direction: column; gap: 4px; }
-    .ng-item {
-      display: flex; justify-content: flex-end; align-items: baseline; gap: 7px;
-      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-      font-weight: 700; font-size: 8.5px; text-transform: uppercase; letter-spacing: .16em;
-      color: var(--i40); transition: color .15s; line-height: 1; text-decoration: none;
+    .ng-links { display: flex; flex-direction: column; gap: 5px; }
+    .ng-link {
+      display: block; color: var(--i34); transition: color .15s; text-decoration: none;
     }
-    .ng-item:hover { color: var(--ink); }
-    .ng-n { font-size: 6px; letter-spacing: .1em; color: var(--i22, rgba(22,22,22,.22)); min-width: 12px; text-align: right; }
+    .ng-link:hover { color: var(--ink); }
 
     .ng-foot {
-      margin-top: 7px;
-      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-      font-weight: 700; font-size: 6px; text-transform: uppercase; letter-spacing: .2em;
-      color: var(--i18, rgba(22,22,22,.18)); text-align: right; line-height: 1.6;
+      margin-top: 9px;
+      font-size: 8px; letter-spacing: .06em;
+      color: var(--i20);
     }
+
+    /* halftone dots — used in works section label */
+    .sec-dots { display: flex; flex-direction: column; gap: 2px; margin-top: 14px; }
+    .sec-drow  { display: flex; gap: 2px; }
+    .nd-sm { display: inline-block; width: 2px;   height: 2px;   border-radius: 50%; background: var(--ink); opacity: .16; }
+    .nd-md { display: inline-block; width: 3.5px; height: 3.5px; border-radius: 38%; background: var(--ink); opacity: .22; }
+    .nd-lg { display: inline-block; width: 5.5px; height: 5.5px; border-radius: 26%; background: var(--ink); opacity: .28; }
 
     section { position: relative; z-index: 10; }
 
@@ -239,29 +218,15 @@
 <body>
 
 <div class="overlay" aria-hidden="true"></div>
-<a href="#top" class="site-brand">bostuff</a>
-
 <nav class="site-nav" aria-label="primary">
-  <!-- halftone band: small circles (top) → rounded squares (bottom) -->
-  <div class="ng-dots" aria-hidden="true">
-    <div class="ng-drow"><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span></div>
-    <div class="ng-drow"><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span></div>
-    <div class="ng-drow"><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span></div>
-    <div class="ng-drow"><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span></div>
-    <div class="ng-drow"><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span></div>
-    <div class="ng-drow"><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span></div>
+  <a href="#top" class="ng-brand">bostuff</a>
+  <div class="ng-links">
+    <a href="#works"               class="ng-link">works</a>
+    <a href="#about"               class="ng-link">about</a>
+    <a href="mailto:hi@bostuff.com" class="ng-link">contact</a>
+    <a href="#imprint"             class="ng-link">imprint</a>
   </div>
-  <!-- glass label body -->
-  <div class="ng-label">
-    <div class="ng-head"><span class="ng-mark">B</span>bostuff · v1.1</div>
-    <div class="ng-items">
-      <a href="#works"              class="ng-item">works<span class="ng-n">01</span></a>
-      <a href="#about"              class="ng-item">about<span class="ng-n">02</span></a>
-      <a href="mailto:hi@bostuff.com" class="ng-item">contact<span class="ng-n">03</span></a>
-      <a href="#imprint"            class="ng-item">imprint<span class="ng-n">04</span></a>
-    </div>
-    <div class="ng-foot">bs-v1.1 · <span id="ng-time">--:--:--</span></div>
-  </div>
+  <div class="ng-foot">v1.1 · <span id="ng-time">--:--:--</span></div>
 </nav>
 
 <!-- HERO -->
@@ -319,6 +284,14 @@
     <div class="sec-label">
       <span class="sec-label-sub">index</span>
       <span class="sec-label-title">works</span>
+      <div class="sec-dots" aria-hidden="true">
+        <div class="sec-drow"><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span></div>
+        <div class="sec-drow"><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span><span class="nd-sm"></span></div>
+        <div class="sec-drow"><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span></div>
+        <div class="sec-drow"><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span><span class="nd-md"></span></div>
+        <div class="sec-drow"><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span></div>
+        <div class="sec-drow"><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span><span class="nd-lg"></span></div>
+      </div>
     </div>
     <div class="works-body">
       <div class="tbl-head">
