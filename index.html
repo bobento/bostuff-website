@@ -95,20 +95,21 @@ body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;o
 /* ── WORK SHEET ── */
 #ws-trigger{display:block;width:100%;text-align:center;font-size:10px;color:var(--muted);letter-spacing:.1em;padding:22px 0 6px;cursor:pointer;background:none;border:none;font-family:var(--mono);text-transform:lowercase;transition:color .15s}
 #ws-trigger:hover{color:var(--ink)}
-#work-sheet{position:fixed;inset:0;z-index:500;background:transparent;overflow-y:auto;overscroll-behavior:contain;transform:translateY(100%);transition:transform .65s cubic-bezier(.32,.72,0,1)}
+@keyframes ws-float{from{translate:0 0}to{translate:var(--tx) var(--ty)}}
+#work-sheet{position:fixed;inset:0;z-index:500;background:transparent;overflow:hidden;transform:translateY(100%);transition:transform .65s cubic-bezier(.32,.72,0,1)}
 #work-sheet.open{transform:translateY(0)}
 #ws-close{position:fixed;top:10px;right:14px;z-index:510;font-size:10px;color:var(--ink);cursor:pointer;background:none;border:none;font-family:var(--mono);text-transform:lowercase;letter-spacing:.06em;transition:opacity .15s;opacity:0;pointer-events:none}
 #work-sheet.open #ws-close{opacity:1;pointer-events:auto}
 #ws-close:hover{opacity:.5}
-#ws-grid{position:relative;min-height:160vh;width:100%}
-#ws-grid img{position:absolute;width:18%;opacity:.72;transition:opacity .25s;cursor:pointer}
+#ws-grid{position:absolute;inset:0}
+#ws-grid img{position:absolute;width:20%;max-height:26vh;object-fit:contain;opacity:.72;cursor:pointer;animation:ws-float var(--dur) var(--del) ease-in-out infinite alternate}
 #ws-grid img:hover{opacity:1;z-index:2}
 
 @media(max-width:600px){
   .wgrid{grid-template-columns:repeat(2,1fr)}
   .cat-grid{grid-template-columns:repeat(2,1fr)}
   .nav a{padding:4px 6px}
-  #ws-grid img{width:36%}
+  #ws-grid img{width:38%;max-height:22vh}
 }
 </style>
 </head>
@@ -560,11 +561,10 @@ function openSheet(){
     const imgs=[...SCATTER_IMGS];
     for(let i=imgs.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[imgs[i],imgs[j]]=[imgs[j],imgs[i]];}
 
-    /* staggered-zone placement: 3 rows × 3 cols, rows have different x-offsets
-       container is 160vh; row y-ranges are disjoint with gap > rotation extent
-       image width 18% CSS; x-gaps between cols ≥ 11% → zero overlap guaranteed */
-    const xZones=[[3,38,69],[10,43,72],[5,37,67]];
-    const yZones=[[2,12],[52,62],[100,110]]; // % of 160vh
+    /* staggered-zone: 3 rows × 3 cols in 100vh, max-height:26vh caps portrait images
+       row y-ranges disjoint with enough gap → zero overlap; x staggered per row */
+    const xZones=[[2,36,68],[10,42,72],[4,38,66]];
+    const yZones=[[2,10],[36,44],[68,76]]; // % of viewport height
 
     grid.innerHTML=imgs.map((src,i)=>{
       const row=Math.floor(i/3),col=i%3;
@@ -572,10 +572,14 @@ function openSheet(){
       const[yA,yB]=yZones[row];
       const left=(xBase+(rng()-.5)*5).toFixed(1);
       const top=(yA+rng()*(yB-yA)).toFixed(1);
-      const rot=((rng()-.5)*24).toFixed(1);
-      const sc=(0.82+rng()*0.3).toFixed(2);
+      const rot=((rng()-.5)*22).toFixed(1);
+      const sc=(0.85+rng()*0.25).toFixed(2);
+      const tx=((rng()-.5)*14).toFixed(1)+'px';
+      const ty=((rng()-.5)*10).toFixed(1)+'px';
+      const dur=(3.5+rng()*3.5).toFixed(1)+'s';
+      const del=(-rng()*5).toFixed(1)+'s';
       return`<img src="${src}" alt="bostuff" loading="eager"
-        style="left:${left}%;top:${top}%;transform:rotate(${rot}deg) scale(${sc})"
+        style="left:${left}%;top:${top}%;transform:rotate(${rot}deg) scale(${sc});--tx:${tx};--ty:${ty};--dur:${dur};--del:${del}"
         onclick="closeSheet()">`;
     }).join('');
   }
@@ -629,9 +633,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     _wAcc+=e.deltaY;
     if(_wAcc>80){_wAcc=0;openSheet();}
   },{passive:true});
-  /* scroll up at top of sheet → close */
+  /* scroll up or down on sheet → close (no scroll content) */
   document.getElementById('work-sheet').addEventListener('wheel',e=>{
-    if(e.deltaY<-30&&document.getElementById('work-sheet').scrollTop<4)closeSheet();
+    if(Math.abs(e.deltaY)>40)closeSheet();
   },{passive:true});
   /* touch swipe up on home → open sheet; swipe down on sheet → close */
   let _ty0=0;
@@ -640,7 +644,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(_ty0-e.changedTouches[0].clientY>60)openSheet();
   },{passive:true});
   document.getElementById('work-sheet').addEventListener('touchend',e=>{
-    if(e.changedTouches[0].clientY-_ty0>70&&document.getElementById('work-sheet').scrollTop<4)closeSheet();
+    if(Math.abs(e.changedTouches[0].clientY-_ty0)>70)closeSheet();
   },{passive:true});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
 
