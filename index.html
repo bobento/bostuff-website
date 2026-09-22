@@ -100,15 +100,15 @@ body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;o
 #ws-close{position:fixed;top:10px;right:14px;z-index:510;font-size:10px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--mono);text-transform:lowercase;letter-spacing:.06em;transition:color .15s;opacity:0;pointer-events:none}
 #work-sheet.open #ws-close{opacity:1;pointer-events:auto}
 #ws-close:hover{color:var(--ink)}
-#ws-grid{position:relative;min-height:240vh;width:100%}
-#ws-grid img{position:absolute;width:26%;opacity:.56;transition:opacity .25s;cursor:pointer}
+#ws-grid{position:relative;min-height:300vh;width:100%}
+#ws-grid img{position:absolute;width:22%;opacity:.56;transition:opacity .25s;cursor:pointer}
 #ws-grid img:hover{opacity:.9;z-index:2}
 
 @media(max-width:600px){
   .wgrid{grid-template-columns:repeat(2,1fr)}
   .cat-grid{grid-template-columns:repeat(2,1fr)}
   .nav a{padding:4px 6px}
-  #ws-grid img{width:44%}
+  #ws-grid img{width:40%}
 }
 </style>
 </head>
@@ -456,6 +456,18 @@ function spinB(){
 }
 
 /* ── category data ── */
+const SCATTER_IMGS=[
+  'assets/images/scatter/belt-17.webp',
+  'assets/images/scatter/belt-18.webp',
+  'assets/images/scatter/belt-19.webp',
+  'assets/images/scatter/belt-20.webp',
+  'assets/images/scatter/belt-21.webp',
+  'assets/images/scatter/belt-22.webp',
+  'assets/images/scatter/belt-23.webp',
+  'assets/images/scatter/belt-24.webp',
+  'assets/images/scatter/belt-25.webp',
+];
+
 const CATS={
   chairs:[
     {src:'assets/images/03-stool-pine.jpg',name:'stool pine',code:'bs-f-008'},
@@ -542,35 +554,30 @@ function openSheet(){
   const sheet=document.getElementById('work-sheet');
   const grid=document.getElementById('ws-grid');
   if(!grid.children.length){
-    const allImgs=Object.entries(CATS).flatMap(([cat,items])=>items.map(i=>({...i,cat})));
-    const n=allImgs.length;
-
-    /* scatter: seeded LCG → deterministic organic layout */
+    /* seeded LCG for deterministic layout */
     let sd=17;
     const rng=()=>{sd=Math.imul(sd,1664525)+1013904223|0;return(sd>>>0)/4294967295};
 
-    /* 3 bands across 240vh: top / mid / lower */
-    const bpp=Math.ceil(n/3);
-    const bands=[[3,22],[36,58],[67,85]];
-    const placed=allImgs.map((_,i)=>{
-      const bi=Math.min(Math.floor(i/bpp),2);
-      const [yA,yB]=bands[bi];
-      const pin=i-bi*bpp;
-      const nin=Math.min(bpp,n-bi*bpp);
-      const xBase=8+(pin/Math.max(nin-1,1))*58;
-      return{
-        left:Math.max(1,Math.min(68,xBase+(rng()-.5)*16)),
-        top:yA+rng()*(yB-yA),
-        rot:(rng()-.5)*30,
-        sc:0.76+rng()*0.44
-      };
-    });
+    /* shuffle image order */
+    const imgs=[...SCATTER_IMGS];
+    for(let i=imgs.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[imgs[i],imgs[j]]=[imgs[j],imgs[i]];}
 
-    grid.innerHTML=allImgs.map(({src,name,cat},i)=>{
-      const p=placed[i];
-      return`<img src="${src}" alt="${name}" loading="eager"
-        style="left:${p.left.toFixed(1)}%;top:${p.top.toFixed(1)}%;transform:rotate(${p.rot.toFixed(1)}deg) scale(${p.sc.toFixed(2)})"
-        onclick="closeSheet();goPage('cat','${cat}')" title="${name}">`;
+    /* 3×3 grid — one image per cell, guaranteed no overlap
+       container is 300vh, cells are 100vh × 33.3% wide
+       image CSS width is 22%, safe x-range per cell = 33.3-22-2 = 9.3% */
+    const cols=3,rows=3,imgW=22;
+    const cW=100/cols,cH=100/rows;
+    const xSafe=cW-imgW-2;
+
+    grid.innerHTML=imgs.map((src,i)=>{
+      const col=i%cols, row=Math.floor(i/cols);
+      const left=(col*cW+1+rng()*xSafe).toFixed(1);
+      const top=(row*cH+3+rng()*(cH-8)).toFixed(1);
+      const rot=((rng()-.5)*28).toFixed(1);
+      const sc=(0.82+rng()*0.28).toFixed(2);
+      return`<img src="${src}" alt="bostuff" loading="eager"
+        style="left:${left}%;top:${top}%;transform:rotate(${rot}deg) scale(${sc})"
+        onclick="closeSheet()">`;
     }).join('');
   }
   sheet.removeAttribute('aria-hidden');
