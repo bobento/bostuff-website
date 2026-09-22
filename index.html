@@ -74,13 +74,23 @@ a{color:inherit;text-decoration:none}
 .cat-back{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--mono);text-transform:lowercase;letter-spacing:.03em;padding:0;margin-bottom:36px;transition:color .15s}
 .cat-back:hover{color:var(--ink)}
 .cat-ph{margin:36px 0 28px}
-.cat-title{font-size:clamp(36px,7vw,72px);font-weight:300;color:var(--blue);letter-spacing:-.01em;line-height:1;margin:0}
+.cat-title{display:block;overflow:visible;color:var(--blue)}
+.cat-title svg{display:block;width:100%;height:auto;overflow:visible}
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px 24px;margin-bottom:60px}
 .cat-item{cursor:pointer}
-.cat-item img{display:block;width:100%;height:auto}
+.cat-item img{display:block;width:100%;height:auto;opacity:.88;transition:opacity .2s}
+.cat-item:hover img{opacity:1}
 .cat-cap{margin-top:8px;display:flex;justify-content:space-between;align-items:baseline;font-size:10px;color:var(--muted);letter-spacing:.04em;border-top:1px solid rgba(26,26,26,.1);padding-top:6px}
 .cat-cap-name{color:var(--ink)}
 .cat-empty{font-size:12px;color:var(--muted);margin-top:40px}
+
+/* film grain overlay */
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.045;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");background-size:200px 200px}
+/* selective transparency — images & icons recede, headings pop */
+.wcat-svg{opacity:.78;transition:opacity .2s}
+.wcell:hover .wcat-svg{opacity:1}
+#heroSvg{opacity:.9}
+.inner .body{opacity:.88}
 
 @media(max-width:600px){
   .wgrid{grid-template-columns:repeat(2,1fr)}
@@ -103,6 +113,15 @@ a{color:inherit;text-decoration:none}
   <filter id="icon-warp" x="-18%" y="-18%" width="136%" height="136%">
     <feTurbulence type="turbulence" baseFrequency=".032 .028" numOctaves="3" seed="17"/>
     <feDisplacementMap in="SourceGraphic" scale="9"/>
+  </filter>
+  <!-- cat glyph grain filter — composites source color through binary noise alpha -->
+  <filter id="cat-grain" x="0%" y="0%" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="8" result="noise"/>
+    <feColorMatrix type="saturate" values="0" in="noise" result="grey"/>
+    <feComponentTransfer in="grey" result="grain-alpha">
+      <feFuncA type="table" tableValues="0 1"/>
+    </feComponentTransfer>
+    <feComposite in="SourceGraphic" in2="grain-alpha" operator="in"/>
   </filter>
   <!-- glyph alphabet -->
   <g id="g-a"><path d="M0 200 C0 160,60 160,60 200 C60 240,0 240,0 200Z"/><path d="M60 200 L80 160"/></g>
@@ -327,7 +346,7 @@ a{color:inherit;text-decoration:none}
 <section class="page" id="p-cat">
   <div class="inner" style="max-width:900px">
     <button class="cat-back" id="cat-back-btn" onclick="goPage('work')">← work</button>
-    <div class="cat-ph"><h1 class="cat-title" id="cat-title"></h1></div>
+    <div class="cat-ph"><div class="cat-title" id="cat-title"></div></div>
     <div class="cat-grid" id="cat-grid"></div>
   </div>
 </section>
@@ -439,11 +458,59 @@ const CATS={
   lamps:[],shelves:[],kitchens:[],installations:[]
 };
 
+/* ── full glyph alphabet (bostuff_alphabet_tim) ── */
+const GD={
+  a:{l:200,r:274,p:['M200 200 C200 160,260 160,260 200 C260 240,200 240,200 200Z','M260 200 L274 160']},
+  b:{l:170,r:230,p:['M170 120 L170 260','M170 200 C170 160,230 160,230 200 C230 240,170 240,170 200Z']},
+  c:{l:140,r:250,p:['M250 170 C210 140,150 160,140 200','M140 200 C150 240,210 260,250 230']},
+  d:{l:190,r:250,p:['M250 120 L250 260','M250 200 C250 160,190 160,190 200 C190 240,250 240,250 200Z']},
+  e:{l:170,r:274,p:['M170 200 C170 160,230 150,260 175 C250 175,210 175,190 195 C175 210,190 240,225 240 C248 240,264 232,274 222']},
+  f:{l:188,r:276,p:['M224 116 C254 112,276 132,260 152 C246 170,234 154,220 124 C234 150,244 202,220 260 L220 274','M188 154 L268 154']},
+  g:{l:260,r:320,p:['M260 180 C260 150,320 150,320 180 C320 210,260 210,260 180Z','M320 196 L320 240 L280 248']},
+  h:{l:170,r:250,p:['M170 120 L170 260','M170 200 C170 170,210 160,250 180 L250 260']},
+  i:{l:210,r:230,p:['M220 160 L220 260']},
+  j:{l:170,r:240,p:['M240 160 L240 238 C236 270,198 282,170 258']},
+  k:{l:170,r:285,p:['M170 120 L170 260','M170 200 C205 175,235 150,280 120','M170 200 C210 220,242 240,285 260']},
+  l:{l:210,r:230,p:['M220 120 L220 260']},
+  m:{l:140,r:280,p:['M140 260 L140 180 C140 160,172 160,200 180 C220 160,252 160,280 180 L280 260']},
+  n:{l:170,r:250,p:['M170 260 L170 180 C170 160,210 160,250 180 L250 260']},
+  o:{l:190,r:250,p:['M190 190 C190 140,250 140,250 190 C250 240,190 240,190 190Z']},
+  p:{l:170,r:230,p:['M170 180 L170 292','M170 200 C170 160,230 160,230 200 C230 240,170 240,170 200Z']},
+  r:{l:180,r:246,p:['M180 260 L180 180','M180 200 C180 172,214 164,246 176']},
+  s:{l:170,r:292,p:['M240 150 C208 122,170 148,196 176 C222 204,266 204,280 228 C292 250,260 268,235 282']},
+  t:{l:180,r:260,p:['M220 120 L220 260','M180 150 L260 150']},
+  u:{l:170,r:230,p:['M170 180 L170 220 C170 250,230 250,230 220 L230 180']},
+  y:{l:170,r:250,p:['M170 180 C186 204,198 214,210 220','M250 180 C236 198,224 210,210 220 L210 288']},
+  z:{l:160,r:310,p:['M160 180 C210 175,260 185,300 180','M300 180 C252 214,212 242,160 260','M160 260 C210 255,260 265,310 260']}
+};
+
+function buildCatGlyph(str){
+  const GAP=22;
+  let x=0;
+  const groups=[];
+  for(const ch of str.toLowerCase()){
+    if(!GD[ch])continue;
+    const {l,r,p}=GD[ch];
+    const w=Math.max(r-l,20);
+    const dx=x-l;
+    groups.push(`<g transform="translate(${dx},0)">${p.map(d=>`<path d="${d}"/>`).join('')}</g>`);
+    x+=w+GAP;
+  }
+  if(!groups.length)return'';
+  x-=GAP;
+  const VY=85,VH=230;
+  return`<svg viewBox="0 ${VY} ${x} ${VH}" xmlns="http://www.w3.org/2000/svg" overflow="visible" style="color:var(--blue)"><defs><mask id="cg-m"><rect x="0" y="${VY}" width="${x}" height="${VH}" fill="#000"/><g filter="url(#g-warp)" stroke="#fff" stroke-width="24" stroke-linecap="butt" stroke-linejoin="round" fill="none">${groups.join('')}</g></mask></defs><rect x="0" y="${VY}" width="${x}" height="${VH}" mask="url(#cg-m)" filter="url(#cat-grain)" fill="currentColor"/></svg>`;
+}
+
 function buildCatPage(cat){
   const items=CATS[cat]||[];
   const grid=document.getElementById('cat-grid');
-  const title=document.getElementById('cat-title');
-  if(title)title.textContent=cat;
+  const titleEl=document.getElementById('cat-title');
+  if(titleEl){
+    titleEl.innerHTML=buildCatGlyph(cat);
+    const charCount=cat.split('').filter(ch=>GD[ch]).length;
+    titleEl.style.width=Math.min(charCount*32,360)+'px';
+  }
   if(!items.length){
     grid.innerHTML='<p class="cat-empty">coming soon</p>';
     return;
