@@ -95,19 +95,20 @@ body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;o
 /* ── WORK SHEET ── */
 #ws-trigger{display:block;width:100%;text-align:center;font-size:10px;color:var(--muted);letter-spacing:.1em;padding:22px 0 6px;cursor:pointer;background:none;border:none;font-family:var(--mono);text-transform:lowercase;transition:color .15s}
 #ws-trigger:hover{color:var(--ink)}
-#work-sheet{position:fixed;inset:0;z-index:500;overflow-y:auto;background:rgba(249,249,247,.92);transform:translateY(100%);transition:transform .6s cubic-bezier(.32,.72,0,1);overscroll-behavior:contain}
+#work-sheet{position:fixed;inset:0;z-index:500;overflow-y:auto;background:rgba(249,249,247,.72);transform:translateY(100%);transition:transform .65s cubic-bezier(.32,.72,0,1);overscroll-behavior:contain}
 #work-sheet.open{transform:translateY(0)}
-#ws-close{position:sticky;top:0;z-index:10;display:block;width:100%;text-align:right;padding:9px 14px;font-size:10px;color:var(--muted);cursor:pointer;background:rgba(249,249,247,.85);border:none;font-family:var(--mono);text-transform:lowercase;letter-spacing:.06em;transition:color .15s;backdrop-filter:blur(6px)}
+#ws-close{position:fixed;top:10px;right:14px;z-index:510;font-size:10px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--mono);text-transform:lowercase;letter-spacing:.06em;transition:color .15s;opacity:0;pointer-events:none}
+#work-sheet.open #ws-close{opacity:1;pointer-events:auto}
 #ws-close:hover{color:var(--ink)}
-#ws-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
-#ws-grid img{display:block;width:100%;aspect-ratio:1;object-fit:cover;opacity:.72;transition:opacity .2s;cursor:pointer}
-#ws-grid img:hover{opacity:.96}
+#ws-grid{position:relative;min-height:240vh;width:100%}
+#ws-grid img{position:absolute;width:26%;opacity:.56;transition:opacity .25s;cursor:pointer}
+#ws-grid img:hover{opacity:.9;z-index:2}
 
 @media(max-width:600px){
   .wgrid{grid-template-columns:repeat(2,1fr)}
   .cat-grid{grid-template-columns:repeat(2,1fr)}
   .nav a{padding:4px 6px}
-  #ws-grid{grid-template-columns:repeat(3,1fr)}
+  #ws-grid img{width:44%}
 }
 </style>
 </head>
@@ -539,11 +540,38 @@ function buildCatPage(cat){
 /* ── work sheet ── */
 function openSheet(){
   const sheet=document.getElementById('work-sheet');
-  if(!document.getElementById('ws-grid').children.length){
-    const imgs=Object.entries(CATS).flatMap(([cat,items])=>items.map(i=>({...i,cat})));
-    document.getElementById('ws-grid').innerHTML=imgs.map(({src,name,cat})=>
-      `<img src="${src}" alt="${name}" loading="lazy" onclick="closeSheet();goPage('cat','${cat}')">`
-    ).join('');
+  const grid=document.getElementById('ws-grid');
+  if(!grid.children.length){
+    const allImgs=Object.entries(CATS).flatMap(([cat,items])=>items.map(i=>({...i,cat})));
+    const n=allImgs.length;
+
+    /* scatter: seeded LCG → deterministic organic layout */
+    let sd=17;
+    const rng=()=>{sd=Math.imul(sd,1664525)+1013904223|0;return(sd>>>0)/4294967295};
+
+    /* 3 bands across 240vh: top / mid / lower */
+    const bpp=Math.ceil(n/3);
+    const bands=[[3,22],[36,58],[67,85]];
+    const placed=allImgs.map((_,i)=>{
+      const bi=Math.min(Math.floor(i/bpp),2);
+      const [yA,yB]=bands[bi];
+      const pin=i-bi*bpp;
+      const nin=Math.min(bpp,n-bi*bpp);
+      const xBase=8+(pin/Math.max(nin-1,1))*58;
+      return{
+        left:Math.max(1,Math.min(68,xBase+(rng()-.5)*16)),
+        top:yA+rng()*(yB-yA),
+        rot:(rng()-.5)*30,
+        sc:0.76+rng()*0.44
+      };
+    });
+
+    grid.innerHTML=allImgs.map(({src,name,cat},i)=>{
+      const p=placed[i];
+      return`<img src="${src}" alt="${name}" loading="eager"
+        style="left:${p.left.toFixed(1)}%;top:${p.top.toFixed(1)}%;transform:rotate(${p.rot.toFixed(1)}deg) scale(${p.sc.toFixed(2)})"
+        onclick="closeSheet();goPage('cat','${cat}')" title="${name}">`;
+    }).join('');
   }
   sheet.removeAttribute('aria-hidden');
   sheet.classList.add('open');
@@ -588,11 +616,22 @@ document.addEventListener('DOMContentLoaded',()=>{
   const h=location.hash.replace('#','');
   if(['work','about','contact'].includes(h))goPage(h);
 
-  /* sheet gestures */
-  document.getElementById('p-home').addEventListener('wheel',e=>{if(e.deltaY>30)openSheet();},{passive:true});
+  /* sheet gestures — accumulate scroll so quick flick opens/closes */
+  let _wAcc=0,_wT=0;
+  document.getElementById('p-home').addEventListener('wheel',e=>{
+    const now=Date.now();if(now-_wT>400)_wAcc=0;_wT=now;
+    _wAcc+=e.deltaY;
+    if(_wAcc>80){_wAcc=0;openSheet();}
+  },{passive:true});
   document.getElementById('work-sheet').addEventListener('wheel',e=>{
     const el=document.getElementById('work-sheet');
     if(e.deltaY<-30&&el.scrollTop<4)closeSheet();
+  },{passive:true});
+  /* touch swipe up on home → open sheet */
+  let _ty0=0;
+  document.getElementById('p-home').addEventListener('touchstart',e=>{_ty0=e.touches[0].clientY;},{passive:true});
+  document.getElementById('p-home').addEventListener('touchend',e=>{
+    if(_ty0-e.changedTouches[0].clientY>60)openSheet();
   },{passive:true});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
 
